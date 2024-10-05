@@ -1,5 +1,8 @@
 import Image from "next/image";
 import { RegisterLink, LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import dotenv from 'dotenv';
+dotenv.config();
+console.log(process.env.MONGODB_URI);
 
 export default function Home() {
   return (
