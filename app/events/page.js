@@ -15,6 +15,12 @@ const EventPage = async () => {
   }
 
   const user = await getUser();
+  
+  // Check if user is null or if it doesn't have an email property
+  if (!user || !user.email) {
+    return <p className="text-red-600">Invalid user session. Please log in again.</p>;
+  }
+
   const userData = await User.findOne({ email: user.email });
 
   if (!userData) {
