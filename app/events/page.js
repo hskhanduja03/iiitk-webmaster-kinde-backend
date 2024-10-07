@@ -2,22 +2,19 @@ import CreateEvent from '@/app/components/CreateEvent/page.js';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import User from '@/models/User';
 import connectDB from '@/lib/db'; // Adjust the path to your connection utility
+import { redirect } from 'next/navigation';
 
 const EventPage = async () => {
   await connectDB(); // Ensure database connection
 
   const { getUser, isAuthenticated } = await getKindeServerSession();
 
-  const user = await getUser();
-  if (!isAuthenticated || !user) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
+  if (!isAuthenticated) {
+    // Use the `redirect` function from `next/navigation` for handling redirects in Next.js 13+
+    redirect('/login');
   }
-  
+
+  const user = await getUser();
   const userData = await User.findOne({ email: user.email });
 
   if (!userData) {
