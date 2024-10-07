@@ -44,7 +44,10 @@ const EventManager = () => {
     setTitle(event.title);
     setDescription(event.description);
     setImageurl(event.imageurl);
-    setDate(event.date);
+  
+    // Convert the event date to the correct format (YYYY-MM-DD)
+    const formattedDate = new Date(event.date).toISOString().split('T')[0];
+    setDate(formattedDate);
   };
 
   // Handle event deletion

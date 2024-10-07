@@ -22,12 +22,12 @@ export async function POST(request) {
   }
 
   try {
-    const { title, description, date, link, imageurl } = await request.json(); // Include imageurl
-    if (!title || !description || !date || !link || !imageurl) { // Validate imageurl
+    const { title, description, date, link } = await request.json(); // Include imageurl
+    if (!title || !description || !date || !link) { // Validate imageurl
       return new Response(JSON.stringify({ error: "All fields are required" }), { status: 400 });
     }
 
-    const newAnnouncement = await Announcement.create({ title, description, date, link, imageurl }); // Save imageurl
+    const newAnnouncement = await Announcement.create({ title, description, date, link }); // Save imageurl
     return new Response(JSON.stringify({ message: "Announcement created successfully", announcement: newAnnouncement }), { status: 201 });
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message || "Failed to create announcement" }), { status: 500 });
@@ -39,17 +39,18 @@ export async function PUT(request) {
   const verify = verifyTokenAndRole('admin');
   const result = await verify(request);
 
-  if (result) {
-    return result; // Ensure this returns a valid response if verification fails
+  // If verification fails, return a valid response.
+  if (!result) {
+    return new Response(JSON.stringify({ error: "Unauthorized access" }), { status: 401 });
   }
 
   try {
-    const { id, title, description, date, link, imageurl } = await request.json(); // Include imageurl
-    if (!id || !title || !description || !date || !link || !imageurl) { // Validate imageurl
+    const { id, title, description, date, link } = await request.json();
+    if (!id || !title || !description || !date || !link) {
       return new Response(JSON.stringify({ error: "All fields are required" }), { status: 400 });
     }
 
-    const updatedAnnouncement = await Announcement.findByIdAndUpdate(id, { title, description, date, link, imageurl }, { new: true }); // Save imageurl
+    const updatedAnnouncement = await Announcement.findByIdAndUpdate(id, { title, description, date, link }, { new: true });
 
     if (!updatedAnnouncement) {
       return new Response(JSON.stringify({ error: "Announcement not found" }), { status: 404 });
@@ -64,15 +65,18 @@ export async function PUT(request) {
 
 export async function DELETE(request) {
   await connectDB();
-  const verify = verifyTokenAndRole('admin'||'superAdmin');
-  const result = await verify(request);
 
-  if (result) {
-    return result; // Ensure this returns a valid response if verification fails
+  // Await the verification function
+  const result = await verifyTokenAndRole('admin')(request);
+
+  // Check for verification result and return a response if not successful
+  if (!result.success) {
+    return new Response(JSON.stringify({ error: result.message }), { status: result.status });
   }
 
   try {
     const { id } = await request.json();
+
     if (!id) {
       return new Response(JSON.stringify({ error: "ID is required" }), { status: 400 });
     }
