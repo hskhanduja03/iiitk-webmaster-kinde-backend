@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { RegisterLink, LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import dotenv from 'dotenv';
+import Link from "next/link";
 dotenv.config();
 console.log(process.env.MONGODB_URI);
 
@@ -19,6 +20,9 @@ export default function Home() {
             Sign Up
           </button>
         </RegisterLink>
+        <button className="px-4 py-2 text-white bg-orange-500 rounded hover:bg-orange-600 transition duration-300">
+            <Link href="/about">About</Link>
+          </button>
       </div>
     </div>
   );
