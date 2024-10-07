@@ -7,17 +7,21 @@ import { NextResponse } from "next/server";
 export async function GET(request) {
     const { getUser } = await getKindeServerSession();
     await connectDB();
-    const userData = await getUser();
-
-    const user = await User.findOne({ email: userData.email });
-
-    if (!user) {
-        return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
-
+    
     try {
-        // Assuming the user document contains a `role` field
-        return NextResponse.json({ newRole: user.role }, { status: 200 }); // Send the user's role
+        const userData = await getUser();
+
+        if (!userData) {
+            return NextResponse.json({ error: "User is not authenticated" }, { status: 401 });
+        }
+
+        const user = await User.findOne({ email: userData.email });
+
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
+
+        return NextResponse.json({ newRole: user.role }, { status: 200 });
     } catch (error) {
         console.error('Error fetching role:', error);
         return NextResponse.json({ error: "Failed to fetch role" }, { status: 500 });
