@@ -1,4 +1,4 @@
-"use client"; // Mark this component as a Client Component
+"use client";
 
 import { useEffect, useState } from "react";
 
@@ -9,12 +9,10 @@ const AnnouncementManager = () => {
   const [currentItem, setCurrentItem] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [imageurl, setImageurl] = useState("");
   const [date, setDate] = useState("");
   const [link, setLink] = useState("");
   const [message, setMessage] = useState("");
 
-  // Fetch announcements on component mount
   useEffect(() => {
     const fetchData = async () => {
       const announcementResponse = await fetch("/api/announcements", {
@@ -27,21 +25,18 @@ const AnnouncementManager = () => {
     fetchData();
   }, []);
 
-  // Open modal for creating a new announcement
   const handleCreateNewItem = () => {
     setIsEdit(false);
     setModalOpen(true);
     resetForm();
   };
 
-  // Open modal for editing an announcement
   const handleEditItem = (item) => {
     setIsEdit(true);
     setModalOpen(true);
     setCurrentItem(item);
     setTitle(item.title);
     setDescription(item.description);
-    setImageurl(item.imageurl || "");
     setDate(item.date);
     setLink(item.link || "");
   };
@@ -49,14 +44,13 @@ const AnnouncementManager = () => {
   const resetForm = () => {
     setTitle("");
     setDescription("");
-    setImageurl("");
     setDate("");
     setLink("");
   };
 
-  // Handle announcement deletion
+  
   const handleDeleteItem = async (item) => {
-    const payload = { id: item._id }; // Send the ID in the payload
+    const payload = { id: item._id }; 
     const response = await fetch("/api/announcements", {
       method: "DELETE",
       headers: {
@@ -72,13 +66,12 @@ const AnnouncementManager = () => {
     }
   };
 
-  // Handle form submission for creating/editing announcements
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const payload = { title, description, date, link }; // Include the date field
+    const payload = { title, description, date, link }; 
   
     if (isEdit) {
-      payload.id = currentItem._id; // Include ID in payload for editing
+      payload.id = currentItem._id;
     }
   
     try {
@@ -96,7 +89,6 @@ const AnnouncementManager = () => {
         setMessage(data.message);
         setModalOpen(false);
   
-        // Update the announcements state
         const updatedAnnouncements = isEdit
           ? announcements.map((announcement) => (announcement._id === currentItem._id ? { ...announcement, ...payload } : announcement))
           : [...announcements, data.announcement];
@@ -159,11 +151,10 @@ const AnnouncementManager = () => {
             </div>
           ))
         ) : (
-          <p>No announcements found.</p>
+          <p>Loading announcements...</p>
         )}
       </div>
 
-      {/* Modal for creating/editing announcements */}
       {modalOpen && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg w-11/12 md:w-1/3">

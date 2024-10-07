@@ -3,7 +3,6 @@ import Event from "@/models/Event.js";
 import { verifyTokenAndRole } from "@/lib/middleware";
 import { NextResponse } from "next/server";
 
-// Fetch all events (GET)
 export async function GET() {
   await connectDB();
   try {
@@ -16,32 +15,25 @@ export async function GET() {
   }
 }
 
-// Create a new event (POST)
-// Create a new event (POST)
 export async function POST(request) {
   await connectDB();
 
-  // Pass only the request to the middleware
   const verify = verifyTokenAndRole("superAdmin");
   const verificationResult = await verify(request);
   
-  // Check the result of the verification
   if (verificationResult !== true) {
-    return NextResponse.json(verificationResult, { status: verificationResult.status }); // Return the error response if verification failed
+    return NextResponse.json(verificationResult, { status: verificationResult.status }); 
   }
 
   try {
     const { title, description, imageurl, date } = await request.json();
     
-    // Validate input fields
     if (!title || !description || !date || !imageurl) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 
-    // Create the event
     const newEvent = await Event.create({ title, description, date, imageurl });
     
-    // Return the success response
     return NextResponse.json({
       message: "Event created successfully",
       event: newEvent,
@@ -54,15 +46,13 @@ export async function POST(request) {
   }
 }
 
-// Update an existing event (PUT)
-// Update an existing event (PUT)
 export async function PUT(request) {
   await connectDB();
 
   const verify = verifyTokenAndRole("superAdmin");
   const result = await verify(request);
   if (!result) {
-    return result; // Return the error response from middleware if verification fails
+    return result; 
   }
 
   try {
@@ -100,15 +90,13 @@ export async function PUT(request) {
   }
 }
 
-// Delete an event (DELETE)
-// Delete an event (DELETE)
 export async function DELETE(request) {
   await connectDB();
 
   const verify = verifyTokenAndRole("superAdmin");
   const result = await verify(request);
   if (!result) {
-    return result; // Return the error response from middleware if verification fails
+    return result;
   }
 
   try {

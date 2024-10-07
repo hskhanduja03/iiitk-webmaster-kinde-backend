@@ -1,4 +1,4 @@
-"use client"; // Mark this component as a Client Component
+"use client"; 
 
 import { useEffect, useState } from 'react';
 
@@ -13,11 +13,10 @@ const EventManager = () => {
   const [date, setDate] = useState('');
   const [message, setMessage] = useState('');
 
-  // Fetch events on component mount
   useEffect(() => {
     const fetchEvents = async () => {
       const response = await fetch('/api/events', {
-        method: 'GET', // Explicitly define the request method
+        method: 'GET', 
       });
       const { data } = await response.json();
       setEvents(data);
@@ -26,7 +25,6 @@ const EventManager = () => {
     fetchEvents();
   }, []);
 
-  // Open modal for creating a new event
   const handleCreateNewEvent = () => {
     setIsEdit(false);
     setModalOpen(true);
@@ -36,7 +34,6 @@ const EventManager = () => {
     setDate('');
   };
 
-  // Open modal for editing an event
   const handleEditEvent = (event) => {
     setIsEdit(true);
     setModalOpen(true);
@@ -45,14 +42,12 @@ const EventManager = () => {
     setDescription(event.description);
     setImageurl(event.imageurl);
   
-    // Convert the event date to the correct format (YYYY-MM-DD)
     const formattedDate = new Date(event.date).toISOString().split('T')[0];
     setDate(formattedDate);
   };
 
-  // Handle event deletion
   const handleDeleteEvent = async (event) => {
-    const payload = { id: event._id }; // Send the ID in the payload
+    const payload = { id: event._id }; 
     const response = await fetch('/api/events', {
       method: 'DELETE',
       headers: {
@@ -68,13 +63,12 @@ const EventManager = () => {
     }
   };
 
-  // Handle form submission for creating/editing events
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = { title, description, imageurl, date };
 
     if (isEdit) {
-      payload.id = currentEvent._id; // Include ID in payload for editing
+      payload.id = currentEvent._id; 
     }
 
     try {
@@ -91,13 +85,11 @@ const EventManager = () => {
       if (response.ok) {
         setMessage(data.message);
         setModalOpen(false);
-        // Refetch events or update the state accordingly
         const updatedEvents = isEdit
           ? events.map((event) => (event._id === currentEvent._id ? { ...event, ...payload } : event))
           : [...events, data.event];
 
         setEvents(updatedEvents);
-        // Reset form fields
         setTitle('');
         setDescription('');
         setImageurl('');
@@ -145,11 +137,10 @@ const EventManager = () => {
             </div>
           ))
         ) : (
-          <p>No events found.</p>
+          <p>Loading events...</p>
         )}
       </div>
 
-      {/* Modal for creating/editing events */}
       {modalOpen && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg w-11/12 md:w-1/3">

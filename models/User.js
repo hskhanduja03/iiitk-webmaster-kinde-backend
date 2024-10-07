@@ -26,7 +26,6 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-// Check if the model is already defined to avoid OverwriteModelError
 const User = mongoose.models.User || mongoose.model('User', UserSchema);
 
 export default User;

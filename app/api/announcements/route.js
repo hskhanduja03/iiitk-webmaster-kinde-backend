@@ -18,16 +18,16 @@ export async function POST(request) {
   const verify = verifyTokenAndRole('admin');
   const result = await verify(request);
   if (!result) {
-    return result; // Ensure this returns a valid response if verification fails
+    return result; 
   }
 
   try {
-    const { title, description, date, link } = await request.json(); // Include imageurl
-    if (!title || !description || !date || !link) { // Validate imageurl
+    const { title, description, date, link } = await request.json(); 
+    if (!title || !description || !date || !link) { 
       return new Response(JSON.stringify({ error: "All fields are required" }), { status: 400 });
     }
 
-    const newAnnouncement = await Announcement.create({ title, description, date, link }); // Save imageurl
+    const newAnnouncement = await Announcement.create({ title, description, date, link }); 
     return new Response(JSON.stringify({ message: "Announcement created successfully", announcement: newAnnouncement }), { status: 201 });
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message || "Failed to create announcement" }), { status: 500 });
@@ -39,7 +39,6 @@ export async function PUT(request) {
   const verify = verifyTokenAndRole('admin');
   const result = await verify(request);
 
-  // If verification fails, return a valid response.
   if (!result) {
     return new Response(JSON.stringify({ error: "Unauthorized access" }), { status: 401 });
   }
@@ -66,10 +65,8 @@ export async function PUT(request) {
 export async function DELETE(request) {
   await connectDB();
 
-  // Await the verification function
   const result = await verifyTokenAndRole('admin')(request);
 
-  // Check for verification result and return a response if not successful
   if (!result.success) {
     return new Response(JSON.stringify({ error: result.message }), { status: result.status });
   }
