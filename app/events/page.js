@@ -8,7 +8,8 @@ const EventPage = async () => {
 
   const { getUser, isAuthenticated } = await getKindeServerSession();
 
-  if (!isAuthenticated) {
+  const user = await getUser();
+  if (!isAuthenticated || !user) {
     return {
       redirect: {
         destination: '/login',
@@ -16,8 +17,7 @@ const EventPage = async () => {
       },
     };
   }
-
-  const user = await getUser();
+  
   const userData = await User.findOne({ email: user.email });
 
   if (!userData) {
